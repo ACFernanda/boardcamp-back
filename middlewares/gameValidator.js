@@ -35,7 +35,7 @@ export async function gameValidator(req, res, next) {
   console.log(checkIdExisting.rows);
 
   if (checkIdExisting.rows.length === 0) {
-    res.status(400).send("problema na id");
+    res.sendStatus(400);
     return;
   }
 
