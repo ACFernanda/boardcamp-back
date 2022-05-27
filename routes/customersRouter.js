@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { customerValidator } from "../middlewares/customerValidator.js";
 import {
   getAllCustomers,
   getCustomer,
@@ -12,8 +13,8 @@ customersRouter.get("/customers", getAllCustomers);
 
 customersRouter.get("/customers/:id", getCustomer);
 
-customersRouter.post("/customers", addCustomer);
+customersRouter.post("/customers", customerValidator, addCustomer);
 
-customersRouter.put("/customers/:id", updateCustomer);
+customersRouter.put("/customers/:id", customerValidator, updateCustomer);
 
 export default customersRouter;

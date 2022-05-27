@@ -32,8 +32,6 @@ export async function gameValidator(req, res, next) {
     [newGame.categoryId]
   );
 
-  console.log(checkIdExisting.rows);
-
   if (checkIdExisting.rows.length === 0) {
     res.sendStatus(400);
     return;

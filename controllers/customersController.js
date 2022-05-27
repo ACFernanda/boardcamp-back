@@ -48,14 +48,15 @@ export async function getCustomer(req, res) {
 export async function addCustomer(req, res) {
   const newCustomer = req.body;
   try {
-    const result = await db.query(
-      `
-      INSERT INTO customers (name, phone, cpf, birthday)
-      VALUES ($1, $2, $3, $4);
-    `,
-      [req.body.name, req.body.phone, req.body.cpf, req.body.birthday]
+    await db.query(
+      `INSERT INTO customers (name, phone, cpf, birthday) VALUES ($1, $2, $3, $4)`,
+      [
+        newCustomer.name,
+        newCustomer.phone,
+        newCustomer.cpf,
+        newCustomer.birthday,
+      ]
     );
-
     res.sendStatus(201);
   } catch (e) {
     console.log(e);
@@ -66,15 +67,14 @@ export async function addCustomer(req, res) {
 export async function updateCustomer(req, res) {
   const { customerId } = req.params;
   try {
-    const result = await db.query(
-      `
-      UPDATE customers 
-      SET 
+    await db.query(
+      `UPDATE customers 
+       SET 
         name = $1,
         phone = $2,
         cpf = $3,
         birthday = $4
-      WHERE id=$5`,
+       WHERE id=$5`,
       [
         req.body.name,
         req.body.phone,
