@@ -6,7 +6,9 @@ export async function gameValidator(req, res, next) {
 
   const gameSchema = joi.object({
     name: joi.string().trim().required(),
+    image: joi.required(),
     stockTotal: joi.number().positive().greater(0).required(),
+    categoryId: joi.required(),
     pricePerDay: joi.number().positive().greater(0).required(),
   });
 
@@ -26,12 +28,14 @@ export async function gameValidator(req, res, next) {
   }
 
   const checkIdExisting = await db.query(
-    "SELECT * FROM categories where id = $1",
+    "SELECT * FROM categories WHERE id = $1",
     [newGame.categoryId]
   );
 
-  if (checkIdExisting.rows.length !== 0) {
-    res.sendStatus(400);
+  console.log(checkIdExisting.rows);
+
+  if (checkIdExisting.rows.length === 0) {
+    res.status(400).send("problema na id");
     return;
   }
 
