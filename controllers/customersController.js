@@ -25,12 +25,19 @@ export async function getAllCustomers(req, res) {
 }
 
 export async function getCustomer(req, res) {
-  const { customerId } = req.params;
+  const customerId = req.params.id;
+
   try {
     const result = await db.query(`SELECT * FROM customers WHERE id = $1`, [
       customerId,
     ]);
     const customer = result.rows[0];
+
+    if (customer === undefined) {
+      res.sendStatus(404);
+      return;
+    }
+
     res.send(customer);
   } catch (e) {
     console.log(e);
