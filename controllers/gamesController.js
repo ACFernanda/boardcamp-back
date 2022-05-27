@@ -1,16 +1,34 @@
 import db from "./../db.js";
 
 export async function getAllGames(req, res) {
-  try {
-    const result = await db.query(
-      `SELECT games.*, categories.name as "categoryName" 
-       FROM games 
-       JOIN categories ON games."categoryId" = categories.id`
-    );
-    res.send(result.rows);
-  } catch (e) {
-    console.log(e);
-    res.status(500).send("Ocorreu um erro ao obter os jogos!");
+  const filter = req.query.name;
+
+  if (filter !== undefined) {
+    try {
+      const result = await db.query(
+        `SELECT games.*, categories.name as "categoryName" 
+         FROM games 
+         JOIN categories 
+         ON games."categoryId" = categories.id 
+         WHERE lower(games.name) LIKE '${filter.toLowerCase()}%'`
+      );
+      res.send(result.rows);
+    } catch (e) {
+      console.log(e);
+      res.status(500).send("Ocorreu um erro ao obter os jogos!");
+    }
+  } else {
+    try {
+      const result = await db.query(
+        `SELECT games.*, categories.name as "categoryName" 
+         FROM games 
+         JOIN categories ON games."categoryId" = categories.id`
+      );
+      res.send(result.rows);
+    } catch (e) {
+      console.log(e);
+      res.status(500).send("Ocorreu um erro ao obter os jogos!");
+    }
   }
 }
 

@@ -3,9 +3,9 @@ import { Router } from "express";
 
 const rentalsRouter = Router();
 
-rentalsRouter.get("/rentals", getAllRentals);
+// rentalsRouter.get("/rentals", getAllRentals);
 
-rentalsRouter.post("/rentals", addRental);
+// rentalsRouter.post("/rentals", addRental);
 
 // rentalsRouter.post("/rentals/:id/return", endRental);
 
