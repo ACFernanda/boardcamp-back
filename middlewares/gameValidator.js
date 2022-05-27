@@ -1,0 +1,39 @@
+import joi from "joi";
+import db from "./../db.js";
+
+export async function gameValidator(req, res, next) {
+  const newGame = req.body;
+
+  const gameSchema = joi.object({
+    name: joi.string().trim().required(),
+    stockTotal: joi.number().positive().greater(0).required(),
+    pricePerDay: joi.number().positive().greater(0).required(),
+  });
+
+  const validation = gameSchema.validate(newGame);
+  if (validation.error) {
+    res.status(400).send(validation.error.details);
+    return;
+  }
+
+  const checkExisting = await db.query("SELECT * FROM games where name = $1", [
+    newGame.name,
+  ]);
+
+  if (checkExisting.rows.length !== 0) {
+    res.sendStatus(409);
+    return;
+  }
+
+  const checkIdExisting = await db.query(
+    "SELECT * FROM categories where id = $1",
+    [newGame.categoryId]
+  );
+
+  if (checkIdExisting.rows.length !== 0) {
+    res.sendStatus(400);
+    return;
+  }
+
+  next();
+}

@@ -34,8 +34,9 @@ export async function getAllGames(req, res) {
 
 export async function addGame(req, res) {
   const newGame = req.body;
+
   try {
-    const result = await db.query(
+    await db.query(
       `INSERT INTO games (name, image, "stockTotal", "categoryId", "pricePerDay")
        VALUES ($1, $2, $3, $4, $5)`,
       [
