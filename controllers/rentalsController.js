@@ -110,3 +110,41 @@ export async function addRental(req, res) {
     res.status(500).send("Ocorreu um erro ao registrar o aluguel!");
   }
 }
+
+export async function endRental(req, res) {
+  const rentalId = req.params.id;
+
+  try {
+    const resultRental = await db.query(`SELECT * FROM rentals WHERE id = $1`, [
+      rentalId,
+    ]);
+    const rental = resultRental.rows[0];
+
+    if (rental === undefined) {
+      res.sendStatus(404);
+      return;
+    }
+
+    const { rentDate, daysRented, returnDate, originalPrice } = rental;
+
+    if (returnDate !== null) {
+      res.sendStatus(400);
+      return;
+    }
+
+    const today = dayjs().format("YYYY-MM-DD");
+    const lateDays = dayjs(today).diff(rentDate, "day") - daysRented;
+    const delayFee =
+      lateDays > 0 ? lateDays * (originalPrice / daysRented) : null;
+
+    await db.query(
+      `
+      UPDATE rentals SET ("returnDate", "delayFee") = ($1, $2) WHERE id = $3`,
+      [today, delayFee, rentalId]
+    );
+    res.sendStatus(200);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+}
