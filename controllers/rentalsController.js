@@ -167,6 +167,8 @@ export async function deleteRental(req, res) {
       res.sendStatus(400);
       return;
     }
+
+    await db.query(`DELETE FROM rentals WHERE id = $1`, [rentalId]);
     res.sendStatus(200);
   } catch (e) {
     console.log(e);
