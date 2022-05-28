@@ -4,6 +4,7 @@ import {
   getAllRentals,
   addRental,
   endRental,
+  deleteRental,
 } from "./../controllers/rentalsController.js";
 
 const rentalsRouter = Router();
@@ -14,6 +15,6 @@ rentalsRouter.post("/rentals", addRentalValidator, addRental);
 
 rentalsRouter.post("/rentals/:id/return", endRental);
 
-// rentalsRouter.delete("/rentals/:id", deleteRental);
+rentalsRouter.delete("/rentals/:id", deleteRental);
 
 export default rentalsRouter;

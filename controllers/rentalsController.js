@@ -145,6 +145,31 @@ export async function endRental(req, res) {
     res.sendStatus(200);
   } catch (e) {
     console.log(e);
-    res.sendStatus(500);
+    res.status(500).send("Ocorreu um erro ao registrar a devolução!");
+  }
+}
+
+export async function deleteRental(req, res) {
+  const rentalId = req.params.id;
+
+  try {
+    const resultRental = await db.query(`SELECT * FROM rentals WHERE id = $1`, [
+      rentalId,
+    ]);
+    const rental = resultRental.rows[0];
+
+    if (rental === undefined) {
+      res.sendStatus(404);
+      return;
+    }
+
+    if (rental.returnDate !== null) {
+      res.sendStatus(400);
+      return;
+    }
+    res.sendStatus(200);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send("Ocorreu um erro ao deletar o aluguel!");
   }
 }
