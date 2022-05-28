@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { addRentalValidator } from "../middlewares/addRentalValidator.js";
 import {
   getAllRentals,
   addRental,
@@ -8,7 +9,7 @@ const rentalsRouter = Router();
 
 rentalsRouter.get("/rentals", getAllRentals);
 
-rentalsRouter.post("/rentals", addRental);
+rentalsRouter.post("/rentals", addRentalValidator, addRental);
 
 // rentalsRouter.post("/rentals/:id/return", endRental);
 

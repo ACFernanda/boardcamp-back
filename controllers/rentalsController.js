@@ -83,8 +83,16 @@ export async function addRental(req, res) {
       return;
     }
 
-    const originalPrice = game.pricePerDay * newRental.daysRented;
+    const openRentals = await db.query(
+      'SELECT * FROM rentals WHERE "gameId" = $1 AND "returnDate" IS NULL',
+      [newRental.gameId]
+    );
+    if (openRentals.rows.length >= game.stockTotal) {
+      res.sendStatus(400);
+      return;
+    }
 
+    const originalPrice = game.pricePerDay * newRental.daysRented;
     const result = await db.query(
       `INSERT INTO rentals ("customerId", "gameId", "rentDate", "daysRented", "returnDate", "originalPrice", "delayFee")
        VALUES ($1, $2, $3, $4, null, $5, null)`,
