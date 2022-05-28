@@ -4,8 +4,25 @@ import joi from "joi";
 import db from "./../db.js";
 
 export async function getAllRentals(req, res) {
+  const filterCustomerId = req.query.customerId;
+  const filterGameId = req.query.gameId;
+
   try {
-    const resultRentals = await db.query(`SELECT * FROM rentals`);
+    let resultRentals;
+    if (filterCustomerId === undefined && filterGameId === undefined) {
+      resultRentals = await db.query(`SELECT * FROM rentals`);
+    }
+    if (filterCustomerId !== undefined) {
+      resultRentals = await db.query(
+        `SELECT * FROM rentals WHERE rentals."customerId" = ${filterCustomerId}`
+      );
+    }
+    if (filterGameId !== undefined) {
+      resultRentals = await db.query(
+        `SELECT * FROM rentals WHERE rentals."gameId" = ${filterGameId}`
+      );
+    }
+
     const rentals = resultRentals.rows;
 
     let completeRentals = [];
