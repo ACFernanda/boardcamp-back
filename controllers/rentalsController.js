@@ -14,14 +14,18 @@ export async function getAllRentals(req, res) {
     let game = null;
     for (let rental of rentals) {
       const customerResult = await db.query(
-        `SELECT * FROM customers WHERE id = $1`,
+        `SELECT customers.id, customers.name FROM customers WHERE id = $1`,
         [rental.customerId]
       );
       customer = customerResult.rows[0];
 
-      const gameResult = await db.query(`SELECT * FROM games WHERE id = $1`, [
-        rental.gameId,
-      ]);
+      const gameResult = await db.query(
+        `SELECT games.id, games.name, games."categoryId", categories.name as "categoryName" 
+      FROM games 
+      JOIN categories ON games."categoryId" = categories.id
+      WHERE games.id = $1;`,
+        [rental.gameId]
+      );
       game = gameResult.rows[0];
 
       completeRental = { ...rental, customer, game };
