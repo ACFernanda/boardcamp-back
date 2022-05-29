@@ -3,24 +3,19 @@ import db from "./../db.js";
 export async function getAllCustomers(req, res) {
   const filter = req.query.cpf;
 
-  if (filter !== undefined) {
-    try {
-      const result = await db.query(
+  try {
+    let result;
+    if (filter !== undefined) {
+      result = await db.query(
         `SELECT * FROM customers WHERE cpf LIKE '${filter}%'`
       );
-      res.send(result.rows);
-    } catch (e) {
-      console.log(e);
-      res.status(500).send("Ocorreu um erro ao obter os clientes!");
+    } else {
+      result = await db.query("SELECT * FROM customers");
     }
-  } else {
-    try {
-      const result = await db.query("SELECT * FROM customers");
-      res.send(result.rows);
-    } catch (e) {
-      console.log(e);
-      res.status(500).send("Ocorreu um erro ao obter os clientes!");
-    }
+    res.send(result.rows);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send("Ocorreu um erro ao obter os clientes!");
   }
 }
 
